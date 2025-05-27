@@ -1,6 +1,10 @@
 # Lighthouse Generator
 
-A service that generates Lighthouse reports for web pages.
+A service that generates performance reports for web pages using Google's PageSpeed Insights API.
+
+## Live Demo
+
+🌐 [View Live Demo](https://vkajith.github.io/lighthouse-generator)
 
 ## Environment Setup
 
@@ -14,6 +18,7 @@ cp .env.example .env
 ### Application
 - `NODE_ENV`: Environment (development/production)
 - `PORT`: Port number for the application (default: 3000)
+- `ALLOWED_ORIGINS`: Comma-separated list of allowed frontend origins (e.g., "http://localhost:3000,https://your-domain.com")
 
 ### MongoDB
 - `MONGODB_URI`: MongoDB connection string
@@ -24,8 +29,8 @@ cp .env.example .env
 ### OpenAI
 - `OPENAI_API_KEY`: Your OpenAI API key
 
-### Chrome/Lighthouse
-- `CHROME_PATH`: Path to Chrome executable (default: /usr/bin/google-chrome)
+### PageSpeed Insights
+- `PAGESPEED_API_KEY`: Your Google PageSpeed Insights API key
 
 ## Running with Docker
 
@@ -43,8 +48,9 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 - Never commit the `.env` file to version control
 - Use strong passwords for MongoDB in production
-- Keep your OpenAI API key secure
+- Keep your API keys secure
 - The application runs as a non-root user in the container
+- CORS is configured to only allow specified origins
 
 ## Development
 
@@ -59,13 +65,9 @@ npm install
 npm run dev
 ```
 
-## Live Demo
-
-🌐 [View Live Demo](https://vkajith.github.io/lighthouse-generator)
-
 ## Features
 
-- Generate Lighthouse performance reports for any URL
+- Generate performance reports for any URL using Google's PageSpeed Insights API
 - View detailed performance metrics including:
   - Performance Score
   - First Contentful Paint (FCP)
@@ -76,6 +78,8 @@ npm run dev
 - Interactive charts and visualizations
 - Detailed recommendations for performance improvements
 - Mobile and desktop testing options
+- CORS support for secure cross-origin requests
+- Rate limiting to prevent abuse
 
 ## Tech Stack
 
@@ -88,8 +92,19 @@ npm run dev
 ### Backend
 - Node.js
 - Express.js
-- Puppeteer for Lighthouse integration
+- Google PageSpeed Insights API
+- OpenAI for AI-powered recommendations
 - MongoDB for data storage
+- CORS for secure cross-origin requests
+- Rate limiting for API protection
+
+## API Endpoints
+
+- `POST /api/lighthouse/generate`: Generate a new performance report
+- `GET /api/lighthouse/reports/:id`: Get a report by ID
+- `GET /api/lighthouse/reports/:id/download`: Download report in HTML format
+- `GET /api/lighthouse/reports/:id/download-json`: Download report in JSON format
+- `GET /health`: Health check endpoint
 
 ## Local Development
 
@@ -136,9 +151,9 @@ The application is deployed using:
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ## License
