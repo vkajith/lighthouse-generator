@@ -3,10 +3,8 @@
  */
 export const SERVER_CONFIG = {
   PORT: process.env.PORT || 5000,
-  MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/lighthouse',
-  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',') 
-    : ['http://localhost:3000', 'https://yourusername.github.io']
+  MONGO_URI: process.env.MONGO_URI,
+  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS.split(',')
 };
 
 /**

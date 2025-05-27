@@ -43,7 +43,6 @@ mongoose.connect(SERVER_CONFIG.MONGO_URI, {
     logger.info('Connected to MongoDB');
     app.listen(SERVER_CONFIG.PORT, () => {
       logger.info(`Server running on port ${SERVER_CONFIG.PORT}`);
-      logger.info(`Health check available at http://localhost:${SERVER_CONFIG.PORT}/health`);
     });
   })
   .catch((err) => {
