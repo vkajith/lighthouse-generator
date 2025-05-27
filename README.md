@@ -1,127 +1,95 @@
-# Lighthouse Report Generator
+# Lighthouse Generator
 
-A full-stack application that generates detailed Lighthouse reports for any website, with AI-powered recommendations.
+A web application that generates Lighthouse performance reports for any URL, providing detailed insights and recommendations for web performance optimization.
+
+## Live Demo
+
+🌐 [View Live Demo](https://vkajith.github.io/lighthouse-generator)
 
 ## Features
 
-- Run Lighthouse audits on any URL
-- View detailed performance metrics
-- Get AI-powered recommendations
-- Download reports in HTML or JSON format
-- Modern, responsive UI
-- Real-time analysis
+- Generate Lighthouse performance reports for any URL
+- View detailed performance metrics including:
+  - Performance Score
+  - First Contentful Paint (FCP)
+  - Largest Contentful Paint (LCP)
+  - Time to Interactive (TTI)
+  - Total Blocking Time (TBT)
+  - Cumulative Layout Shift (CLS)
+- Interactive charts and visualizations
+- Detailed recommendations for performance improvements
+- Mobile and desktop testing options
 
 ## Tech Stack
 
 ### Frontend
-- React
+- React.js
 - Material-UI
 - Recharts for data visualization
-- GitHub Pages for hosting
+- Axios for API calls
 
 ### Backend
-- Node.js/Express
-- MongoDB
-- OpenAI API for recommendations
-- Render for hosting
+- Node.js
+- Express.js
+- Puppeteer for Lighthouse integration
+- MongoDB for data storage
 
 ## Local Development
 
 ### Prerequisites
-- Node.js 18+
+- Node.js (v14 or higher)
 - MongoDB
 - OpenAI API key
 
-### Setup
-
-1. Clone the repository:
+### Frontend Setup
 ```bash
-git clone https://github.com/yourusername/lighthouse-generator.git
-cd lighthouse-generator
+cd frontend
+npm install
+npm start
 ```
 
-2. Install dependencies:
+### Backend Setup
 ```bash
-# Install backend dependencies
 cd backend
 npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
+npm start
 ```
 
-3. Create environment files:
+### Environment Variables
+
+Frontend (.env.development):
+```
+REACT_APP_API_URL=http://localhost:3000
+```
 
 Backend (.env):
 ```
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/lighthouse
+PORT=3000
+MONGO_URI=your_mongodb_uri
 OPENAI_API_KEY=your_openai_api_key
-ALLOWED_ORIGINS=http://localhost:3000
-```
-
-Frontend (.env):
-```
-REACT_APP_BACKEND_URL=http://localhost:5000
-```
-
-4. Start the development servers:
-
-```bash
-# Start backend (from backend directory)
-npm start
-
-# Start frontend (from frontend directory)
-npm start
+ALLOWED_ORIGINS=http://localhost:3001
 ```
 
 ## Deployment
 
-### Backend Deployment (Render)
-
-1. Create a Render account and new Web Service
-2. Connect your GitHub repository
-3. Configure environment variables:
-   - MONGO_URI
-   - OPENAI_API_KEY
-   - ALLOWED_ORIGINS (set to your GitHub Pages URL)
-4. Deploy
-
-### Frontend Deployment (GitHub Pages)
-
-1. Update the homepage in frontend/package.json:
-```json
-{
-  "homepage": "https://yourusername.github.io/lighthouse-generator"
-}
-```
-
-2. Add GitHub Secrets:
-   - Go to repository Settings > Secrets and variables > Actions
-   - Add BACKEND_URL secret with your Render backend URL
-
-3. Push to main branch to trigger deployment
-
-## Environment Variables
-
-### Backend
-- PORT: Server port (default: 5000)
-- MONGO_URI: MongoDB connection string
-- OPENAI_API_KEY: OpenAI API key
-- ALLOWED_ORIGINS: Comma-separated list of allowed origins
-
-### Frontend
-- REACT_APP_BACKEND_URL: Backend API URL
+The application is deployed using:
+- Frontend: GitHub Pages
+- Backend: Render.com
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-MIT 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+Your Name - [@your_twitter](https://twitter.com/your_twitter)
+
+Project Link: [https://github.com/vkajith/lighthouse-generator](https://github.com/vkajith/lighthouse-generator) 
