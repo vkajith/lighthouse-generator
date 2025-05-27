@@ -1,9 +1,6 @@
-import lighthouse from 'lighthouse';
-import * as chromeLauncher from 'chrome-launcher';
 import { OpenAI } from 'openai';
 import { logger } from '../utils/logger.js';
 import { createLighthousePrompt, OPENAI_CONFIG } from '../utils/promptUtils.js';
-import { LIGHTHOUSE_CONFIG } from '../constants/index.js';
 import { LighthouseError } from '../utils/errors.js';
 
 const openai = new OpenAI({
@@ -11,29 +8,38 @@ const openai = new OpenAI({
 });
 
 async function runLighthouseAudit(url) {
-  let chrome;
   try {
-    logger.info('Launching Chrome...');
-    chrome = await chromeLauncher.launch({ 
-      chromeFlags: LIGHTHOUSE_CONFIG.CHROME_FLAGS,
-      logLevel: 'info'
+    logger.info('Starting PageSpeed Insights audit for URL:', url);
+    
+    const apiKey = process.env.PAGESPEED_API_KEY;
+    if (!apiKey) {
+      throw new LighthouseError('PageSpeed API key is required');
+    }
+
+    // Build URL with multiple category parameters
+    const baseUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
+    const params = new URLSearchParams({
+      url,
+      key: apiKey,
+      strategy: 'mobile'
     });
-    logger.info('Chrome launched successfully on port:', chrome.port);
 
-    const options = {
-      logLevel: 'info',
-      output: LIGHTHOUSE_CONFIG.OUTPUT_FORMATS,
-      onlyCategories: LIGHTHOUSE_CONFIG.CATEGORIES,
-      port: chrome.port,
-    };
+    // Add each category separately
+    ['performance', 'accessibility', 'best-practices', 'seo'].forEach(category => {
+      params.append('category', category);
+    });
 
-    logger.info('Starting Lighthouse audit for URL:', url);
-    const results = await lighthouse(url, options);
-    logger.info('Lighthouse audit completed successfully');
+    const response = await fetch(`${baseUrl}?${params}`);
 
-    await chrome.kill();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new LighthouseError(`PageSpeed API request failed: ${response.statusText}. Details: ${errorText}`);
+    }
 
-    const { categories, audits } = results.lhr;
+    const results = await response.json();
+    logger.info('PageSpeed Insights audit completed successfully');
+
+    const { categories, audits } = results.lighthouseResult;
     
     // Extract summary scores
     const summary = {
@@ -46,12 +52,12 @@ async function runLighthouseAudit(url) {
     // Extract Core Web Vitals
     const coreWebVitals = {
       lcp: {
-        value: Number((audits['largest-contentful-paint'].numericValue / 1000).toFixed(2)), // Convert to seconds
+        value: Number((audits['largest-contentful-paint'].numericValue / 1000).toFixed(2)),
         score: Math.round(audits['largest-contentful-paint'].score * 100),
         unit: 's'
       },
       fid: {
-        value: Number(audits['max-potential-fid'].numericValue.toFixed(2)), // Already in milliseconds
+        value: Number(audits['max-potential-fid'].numericValue.toFixed(2)),
         score: Math.round(audits['max-potential-fid'].score * 100),
         unit: 'ms'
       },
@@ -61,12 +67,12 @@ async function runLighthouseAudit(url) {
         unit: ''
       },
       fcp: {
-        value: Number((audits['first-contentful-paint'].numericValue / 1000).toFixed(2)), // Convert to seconds
+        value: Number((audits['first-contentful-paint'].numericValue / 1000).toFixed(2)),
         score: Math.round(audits['first-contentful-paint'].score * 100),
         unit: 's'
       },
       tti: {
-        value: Number((audits['interactive'].numericValue / 1000).toFixed(2)), // Convert to seconds
+        value: Number((audits['interactive'].numericValue / 1000).toFixed(2)),
         score: Math.round(audits['interactive'].score * 100),
         unit: 's'
       }
@@ -75,7 +81,7 @@ async function runLighthouseAudit(url) {
     // Extract Performance Metrics
     const performance = {
       speedIndex: {
-        value: Number((audits['speed-index'].numericValue / 1000).toFixed(2)), // Convert to seconds
+        value: Number((audits['speed-index'].numericValue / 1000).toFixed(2)),
         score: Math.round(audits['speed-index'].score * 100),
         unit: 's'
       },
@@ -156,14 +162,6 @@ async function runLighthouseAudit(url) {
         }))
     };
 
-    // Extract HTML report
-    let htmlReport = '';
-    if (Array.isArray(results.report)) {
-      htmlReport = results.report[1]; // [jsonString, htmlString]
-    } else if (typeof results.report === 'string') {
-      htmlReport = results.report;
-    }
-
     return {
       summary,
       metrics: {
@@ -174,16 +172,13 @@ async function runLighthouseAudit(url) {
         bestPractices
       },
       fullReport: {
-        json: results.lhr,
-        html: htmlReport
+        json: results.lighthouseResult,
+        html: results.lighthouseResult.fullReport
       }
     };
   } catch (error) {
-    logger.error('Error during Lighthouse audit:', error);
-    if (chrome) {
-      await chrome.kill();
-    }
-    throw new LighthouseError(`Failed to run Lighthouse audit: ${error.message}`);
+    logger.error('Error during PageSpeed Insights audit:', error);
+    throw new LighthouseError(`Failed to run PageSpeed Insights audit: ${error.message}`);
   }
 }
 

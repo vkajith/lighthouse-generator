@@ -11,8 +11,24 @@ import { SERVER_CONFIG, RATE_LIMIT_CONFIG } from './constants/index.js';
 
 const app = express();
 
+// CORS configuration
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = SERVER_CONFIG.ALLOWED_ORIGINS?.split(',') || [];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      logger.warn(`CORS blocked request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 app.use(helmet());
-app.use(cors({ origin: SERVER_CONFIG.ALLOWED_ORIGINS, credentials: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(rateLimit({
   windowMs: RATE_LIMIT_CONFIG.WINDOW_MS,
