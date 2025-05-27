@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/lighthouse-generator/static/js/main.e1a95d42.js",
+    "index.html": "/lighthouse-generator/index.html",
+    "main.e1a95d42.js.map": "/lighthouse-generator/static/js/main.e1a95d42.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.e1a95d42.js"
+  ]
+}
