@@ -1,17 +1,30 @@
 services:
   - type: web
-    name: lighthouse-generator-api
-    env: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    name: lighthouse-generator
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
-      - key: MONGO_URI
-        sync: false
+        value: 3000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: lighthouse-mongodb
+          property: connectionString
       - key: OPENAI_API_KEY
         sync: false
+      - key: CHROME_PATH
+        value: /usr/bin/google-chrome
       - key: ALLOWED_ORIGINS
-        value: https://yourusername.github.io 
+        value: https://vkajith.github.io
+    healthCheckPath: /api/lighthouse/health
+    autoDeploy: true
+
+databases:
+  - name: lighthouse-mongodb
+    databaseName: lighthouse
+    plan: free
+    ipAllowList: [] 

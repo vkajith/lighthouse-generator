@@ -1,6 +1,63 @@
 # Lighthouse Generator
 
-A web application that generates Lighthouse performance reports for any URL, providing detailed insights and recommendations for web performance optimization.
+A service that generates Lighthouse reports for web pages.
+
+## Environment Setup
+
+1. Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+2. Configure the following environment variables in your `.env` file:
+
+### Application
+- `NODE_ENV`: Environment (development/production)
+- `PORT`: Port number for the application (default: 3000)
+
+### MongoDB
+- `MONGODB_URI`: MongoDB connection string
+- `MONGODB_PORT`: MongoDB port (default: 27017)
+- `MONGO_ROOT_USERNAME`: MongoDB root username (optional)
+- `MONGO_ROOT_PASSWORD`: MongoDB root password (optional)
+
+### OpenAI
+- `OPENAI_API_KEY`: Your OpenAI API key
+
+### Chrome/Lighthouse
+- `CHROME_PATH`: Path to Chrome executable (default: /usr/bin/google-chrome)
+
+## Running with Docker
+
+1. Build and start the services:
+```bash
+docker-compose up --build
+```
+
+2. For production:
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+## Security Notes
+
+- Never commit the `.env` file to version control
+- Use strong passwords for MongoDB in production
+- Keep your OpenAI API key secure
+- The application runs as a non-root user in the container
+
+## Development
+
+1. Install dependencies:
+```bash
+cd backend
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
 
 ## Live Demo
 

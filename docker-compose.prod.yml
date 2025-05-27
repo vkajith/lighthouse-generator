@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  lighthouse-service:
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPU_LIMIT:-1}
+          memory: ${MEMORY_LIMIT:-2G}
+    logging:
+      driver: ${LOG_DRIVER:-json-file}
+      options:
+        max-size: ${LOG_MAX_SIZE:-10m}
+        max-file: ${LOG_MAX_FILE:-3}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}${HEALTH_CHECK_PATH:-/api/lighthouse/health}"]
+      interval: ${HEALTH_CHECK_INTERVAL:-30s}
+      timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
+      retries: ${HEALTH_CHECK_RETRIES:-3}
+
+  mongodb:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          cpus: ${MONGO_CPU_LIMIT:-1}
+          memory: ${MONGO_MEMORY_LIMIT:-1G}
+    logging:
+      driver: ${MONGO_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${MONGO_LOG_MAX_SIZE:-10m}
+        max-file: ${MONGO_LOG_MAX_FILE:-3}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: ${MONGO_HEALTH_CHECK_INTERVAL:-30s}
+      timeout: ${MONGO_HEALTH_CHECK_TIMEOUT:-10s}
+      retries: ${MONGO_HEALTH_CHECK_RETRIES:-3} 
