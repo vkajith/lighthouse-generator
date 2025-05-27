@@ -45,7 +45,7 @@ const App = () => {
       const data = await generateReport(targetUrl);
       setReport(data.data);
     } catch (err) {
-      setError('Failed to generate report. Please try again.');
+      setError(err.message || 'Failed to generate report. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -172,7 +172,7 @@ const App = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  placeholder="Enter website URL (e.g., https://example.com)"
+                  placeholder="Enter website URL or domain (e.g., example.com)"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   disabled={loading}
@@ -230,6 +230,7 @@ const App = () => {
                     '& .MuiAlert-icon': {
                       color: '#183B4E',
                     },
+                    mt: 2
                   }}
                 >
                   {error}

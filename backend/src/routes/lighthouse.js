@@ -1,5 +1,6 @@
 import express from 'express';
 import * as lighthouseController from '../controllers/lighthouseController.js';
+import { validateGenerateReport } from '../middleware/validators.js';
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ const router = express.Router();
 router.get('/health', lighthouseController.healthCheck);
 
 // Generate new report
-router.post('/generate', lighthouseController.generateReport);
+router.post('/generate', validateGenerateReport, lighthouseController.generateReport);
 
 // Get report by ID
 router.get('/reports/:id', lighthouseController.getReportById);

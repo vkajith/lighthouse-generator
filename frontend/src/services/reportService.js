@@ -7,6 +7,17 @@ const api = axios.create({
   },
 });
 
+const normalizeUrl = (url) => {
+  if (!url) return url;
+  // Remove any whitespace
+  url = url.trim();
+  // Add https:// if no protocol is specified
+  if (!url.match(/^https?:\/\//i)) {
+    url = 'https://' + url;
+  }
+  return url;
+};
+
 export const healthCheck = async () => {
   try {
     const response = await api.get('/health');
@@ -21,10 +32,16 @@ export const healthCheck = async () => {
 
 export const generateReport = async (url) => {
   try {
-    const response = await api.post('/api/lighthouse/generate', { url });
+    const normalizedUrl = normalizeUrl(url);
+    const response = await api.post('/api/lighthouse/generate', { url: normalizedUrl });
     return response.data;
   } catch (error) {
     if (error.response) {
+      // Handle validation errors
+      if (error.response.status === 400) {
+        const errorMessage = error.response.data.details?.[0]?.msg || error.response.data.error;
+        throw new Error(errorMessage);
+      }
       throw new Error(error.response.data.error || 'Failed to generate report');
     }
     throw new Error('Failed to connect to the server');
