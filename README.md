@@ -6,6 +6,8 @@ A service that generates performance reports for web pages using Google's PageSp
 
 🌐 [View Live Demo](https://vkajith.github.io/lighthouse-generator)
 
+![Demo](frontend/public/demo.gif)
+
 ## Environment Setup
 
 1. Copy the example environment file:
